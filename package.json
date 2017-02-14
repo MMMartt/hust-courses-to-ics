@@ -1,0 +1,14 @@
+{
+  "name": "node-hub",
+  "version": "1.0.0",
+  "description": "get lessons from hub(hust).",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "MartinNey",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.79.0"
+  }
+}
