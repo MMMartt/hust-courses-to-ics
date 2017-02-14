@@ -12,3 +12,4 @@ npm install
 node index.js
 ```
 
+*NOT FINISHED YET!!!*
