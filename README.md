@@ -20,6 +20,7 @@ vi src/student-info-sample.json
 # :)
 
 # run
+cd src
 node index.js
 ```
 If there is no error, there should be an 'out.ics' at 'build/'. Check it and import it to app you like.
