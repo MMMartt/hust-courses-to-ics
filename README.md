@@ -2,7 +2,7 @@
 Get Courses From Hub(HUST)
 
 **Prerequisite**
-+ nodejs
++ nodejs (need to support es6)
 
 **Usage**
 ```sh
