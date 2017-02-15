@@ -9,6 +9,8 @@
   "author": "MartinNey",
   "license": "ISC",
   "dependencies": {
+    "ical.js": "^1.2.2",
+    "node-uuid": "^1.4.7",
     "request": "^2.79.0"
   }
 }

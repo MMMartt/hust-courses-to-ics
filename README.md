@@ -6,10 +6,20 @@ Get Lessons From Hub(HUST)
 
 **Usage**
 ```sh
+# clone this repo
 git clone https://github.com/MartinNey/HubLessonsGet.git
+# change dir
 cd HubLessonsGet
+# install packages
 npm install
+# edit and save it as 'student-info.json'
+vi src/student-info-sample.json
+# ps: you should be using vim
+# if you are using Emacs, there is probably somthing wrong with you
+# if you are using something that is not a real code editor, that is even worse
+# :)
+
+# run
 node index.js
 ```
-
-*NOT FINISHED YET!!!*
+If there is no error, there should be a 'out.ics' at 'build/'. Check it and import it to app you like.

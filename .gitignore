@@ -74,3 +74,6 @@ Session.vim
 # auto-generated tag files
 tags
 student-info.json
+build/out.ics
+build/out.json
+
