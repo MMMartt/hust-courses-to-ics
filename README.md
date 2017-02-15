@@ -14,6 +14,7 @@ cd hust-courses-to-ics
 npm install
 # edit and save it as 'student-info.json'
 vi src/student-info-sample.json
+cp src/student-info-sample.json src/student-info.json
 # ps: you should be using vim
 # if you are using Emacs, there is probably somthing wrong with you
 # if you are using something that is not a real code editor, that is even worse
