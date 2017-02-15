@@ -1,0 +1,66 @@
+{
+  "firstRequestHeaders": {
+    "url": "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fone.hust.edu.cn%2Fdcp%2Findex.jsp",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      "Pragma": "no-cache",
+      "Referer": "pass.hust.edu.cn",
+      "Upgrade-Insecure-Requests": "1",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+    }
+  },
+  "loginHeaders": {
+    "url": "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhub.hust.edu.cn%2Fhustpass.action",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      "Content-Length": "603",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Host": "pass.hust.edu.cn",
+      "Origin": "https://pass.hust.edu.cn",
+      "Pragma": "no-cache",
+      "Referer": "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action",
+      "Upgrade-Insecure-Requests": "1",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+    }
+  },
+  "hubHeaders": {
+    "url": "http://hubs.hust.edu.cn/hustpass.action",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      "Pragma": "no-cache",
+      "Host": "hubs.hust.edu.cn",
+      "Upgrade-Insecure-Requests": "1",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+    }
+  },
+  "lessonsHeaders": {
+    "url": "http://hubs.hust.edu.cn/aam/score/CourseInquiry_ido.action",
+    "headers": {
+      "Accept": "application/json, text/javascript, */*; q=0.01",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      "Pragma": "no-cache",
+      "Host": "hubs.hust.edu.cn",
+      "Referer": "http://hubs.hust.edu.cn/aam/report/scheduleQuery.jsp",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+    },
+    "form": {
+      "start": "2017-01-01",
+      "end": "2017-08-01"
+    }
+  }
+}
