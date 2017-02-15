@@ -45,7 +45,7 @@ module.exports = {
         second: valueToSlice(lesson['end'], 8, 10),
         isDate: false
       });
-      event.location = /'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1];
+      event.location = /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1];
       //event
       //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
       comp.addSubcomponent(vevent);
