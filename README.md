@@ -1,5 +1,5 @@
-# HubLessonsGet
-Get Lessons From Hub(HUST)
+# hust courses to ics
+Get Courses From Hub(HUST)
 
 **Prerequisite**
 + nodejs
@@ -7,9 +7,9 @@ Get Lessons From Hub(HUST)
 **Usage**
 ```sh
 # clone this repo
-git clone https://github.com/MartinNey/HubLessonsGet.git
+git clone https://github.com/MartinNey/hust-courses-to-ics.git
 # change dir
-cd HubLessonsGet
+cd hust-courses-to-ics
 # install packages
 npm install
 # edit and save it as 'student-info.json'
