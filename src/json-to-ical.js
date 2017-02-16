@@ -16,7 +16,7 @@ module.exports = {
     const lessons = JSON.parse(content);
     //let comp = new ICAL.
 
-    let comp = new ICAL.Component(['vcalendar', [], []]);
+    let comp = new jsical.Component(['vcalendar', [], []]);
     comp.updatePropertyWithValue('prodid', '-//gayhub/MartinNey');
     const valueToSlice = (str, beg, end) => Number(String(str).slice(beg, end));
     console.log(lessons.length, 'lessons.');
@@ -27,7 +27,7 @@ module.exports = {
       event.summary = lesson['title'];
       event.uid = uuid.v1() + '@smaroad.com';
       event.description = [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | ')
-      event.startDate = new ICAL.Time({
+      event.startDate = new jsical.Time({
         year: valueToSlice(lesson['start'], 0, 4),
         month: valueToSlice(lesson['start'], 5, 7),
         day: valueToSlice(lesson['start'], 8, 10),
@@ -36,7 +36,8 @@ module.exports = {
         second: valueToSlice(lesson['start'], 8, 10),
         isDate: false
       });
-      event.endDate = new ICAL.Time({
+      //event.startDate.convertToZone(jsical.Timezone.localTimezone);
+      event.endDate = new jsical.Time({
         year: valueToSlice(lesson['end'], 0, 4),
         month: valueToSlice(lesson['end'], 5, 7),
         day: valueToSlice(lesson['end'], 8, 10),
@@ -45,6 +46,7 @@ module.exports = {
         second: valueToSlice(lesson['end'], 8, 10),
         isDate: false
       });
+      //event.endDate.convertToZone(jsical.Timezone.localTimezone);
       event.location = /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1];
       //event
       //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
