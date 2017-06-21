@@ -21,7 +21,6 @@ cp src/student-info-sample.json src/student-info.json
 # :)
 
 # run
-cd src
-node index.js
+npm start
 ```
 If there is no error, there should be an 'out.ics' at 'build/'. Check it and import it to app you like.

@@ -1,53 +1,73 @@
-var request = require('request');
-const log = require('./simple-log.js');
-const rsa = require('./rsa-loader.js');
-const configs = require('./config-loader.js');
-const jsonToIcal = require('./json-to-ical.js');
+import rq from 'request-promise-native';
+import {configs, studentInfo} from './config-loader';
+import {toICAL, toJSON} from './json-to-ical';
+import RSA from './rsa-loader';
+import Log from './simple-log';
 
-const pubkeyRegex = /RSAKeyPair\(\"([0-9]*?)\",\"\",\"([0-9a-fA-F]*?)\"\);/g;
-const formInputRegex = /name=\"execution\" value=\"([es1-4]*?)\"/;
+const regexs = {
+  pubkey: /RSAKeyPair\(\"([0-9]*?)\",\"\",\"([0-9a-fA-F]*?)\"\);/g,
+  formInputs: /name=\"execution\" value=\"([es1-4]*?)\"/
+};
 
-var request = request.defaults({jar: true});
+const defaultOption = {
+  jar: true,
+  simple: false,
+  resolveWithFullResponse: true
+};
 
-request.get(configs.firstHeaders, (err, res, body) => {
-  if (!log.either(err, res)) {
-    return;
-  }
-  let infoForm = {};
-  const pubkeyRes = pubkeyRegex.exec(body);
-  if (pubkeyRes == null) {
-    log.error('no pubkey found!');
-    return;
-  }
-  const pubkey = rsa.RSAKeyPair(pubkeyRes[1], pubkeyRes[2]);
-  infoForm['username'] = rsa.encryptedString(pubkey, configs.studentInfo.username);
-  infoForm['password'] = rsa.encryptedString(pubkey, configs.studentInfo.password);
-  //console.log(configs.loginHeaders);
-  //TODO: get these value from html rather than copy from it.
-  configs.loginHeaders['form'] = {};
-  configs.loginHeaders['form']['username'] = infoForm['username'];
-  configs.loginHeaders['form']['password'] = infoForm['password'];
-  configs.loginHeaders['form']['code'] = 'code';
-  configs.loginHeaders['form']['lt'] = 'LT-NeusoftAlwaysValidTicket';
-  configs.loginHeaders['form']['execution'] = 'e1s1';
-  configs.loginHeaders['form']['_eventId'] = 'submit';
-  //console.log(configs.loginHeaders['form'])
-  request.post(configs.loginHeaders, (err, res, body) => {
-    if (!log.either(err, res)) {
-      return;
+const request = rq.defaults(defaultOption);
+
+request({
+  url: configs.firstHeaders.url,
+  headers: configs.firstHeaders.headers,
+  method: 'GET',
+}).then((res) => {
+  Log.response(res);
+  const parseData = (data) => {
+    const pubkeyString = regexs.pubkey.exec(data);
+    if (pubkeyString === null) {
+      Log.error('no pubkey found!');
+      return null;
     }
-    request.get(configs.hubHeaders, (err, res, body) => {
-      if (!log.either(err, res)) {
-        return;
-      }
-      request.post(configs.lessonsHeaders, (err, res, body) => {
-        if (!log.either(err, res)) {
-          return;
-        }
-        jsonToIcal.exportToICAL(body);
-        //jsonToIcal.exportToJSON(body);
-        //console.log(JSON.parse(body));
-      });
-    });
+    const pubkey = RSA.RSAKeyPair(pubkeyString[1], pubkeyString[2]);
+    const encrypt = string => RSA.encryptedString(pubkey, string);
+    return {
+      username: encrypt(studentInfo.username),
+      password: encrypt(studentInfo.password),
+      code: 'code',
+      lt: 'LT-NeusoftAlwaysValidTicket',
+      execution: 'e1s1',
+      _eventId: 'submit',
+    };
+  };
+  const userInfo = parseData(res.body);
+  if (!userInfo) {
+    throw new Error('Whoops! Something\'s wrong while parsing for pubkey.')
+  }
+  return request({
+    url: configs.loginHeaders.url,
+    headers: configs.loginHeaders.headers,
+    method: 'POST',
+    form: userInfo,
   });
+}).then((res) => {
+  Log.response(res);
+  return request({
+    url: configs.hubHeaders.url,
+    headers: configs.hubHeaders.headers,
+    method: 'GET',
+  });
+}).then((res) => {
+  Log.response(res);
+  return request({
+    url: configs.lessonsHeaders.url,
+    headers: configs.lessonsHeaders.headers,
+    form: studentInfo.period,
+    method: 'POST',
+  });
+}).then((res) => {
+  Log.response(res);
+  toICAL(res.body);
+}).catch((err) => {
+  Log.error(err);
 });

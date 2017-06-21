@@ -1,5 +1,7 @@
 {
-    "plugins": {
-        "node": {}
-    }
+  "plugins": {
+    "node": {},
+    "modules": {},
+    "es_modules": {}
+  }
 }

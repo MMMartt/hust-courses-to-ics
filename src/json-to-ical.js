@@ -1,62 +1,58 @@
-const fs = require('fs');
-const jsical = require('ical.js');
-const uuid = require('node-uuid');
+import fs from 'fs';
+import jsical from 'ical.js';
+import uuid from 'uuid';
 
-
-module.exports = {
-  exportToJSON: (content) => {
-    fs.writeFile("../build/out.json", content, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        console.log("The file saved!");
-    });
-  },
-  exportToICAL: (content) => {
-    const lessons = JSON.parse(content);
-    //let comp = new ICAL.
-
-    let comp = new jsical.Component(['vcalendar', [], []]);
-    comp.updatePropertyWithValue('prodid', '-//gayhub/MartinNey');
-    const valueToSlice = (str, beg, end) => Number(String(str).slice(beg, end));
-    console.log(lessons.length, 'lessons.');
-    for (let i in lessons) {
-      const lesson = lessons[i];
-      let vevent = new jsical.Component('vevent'),
-      event = new jsical.Event(vevent);
-      event.summary = lesson['title'];
-      event.uid = uuid.v1() + '@smaroad.com';
-      event.description = [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | ')
-      event.startDate = new jsical.Time({
-        year: valueToSlice(lesson['start'], 0, 4),
-        month: valueToSlice(lesson['start'], 5, 7),
-        day: valueToSlice(lesson['start'], 8, 10),
-        hour: valueToSlice(lesson['start'], 11, 13),
-        minute: valueToSlice(lesson['start'], 14, 16),
-        second: valueToSlice(lesson['start'], 8, 10),
-        isDate: false
-      });
-      //event.startDate.convertToZone(jsical.Timezone.localTimezone);
-      event.endDate = new jsical.Time({
-        year: valueToSlice(lesson['end'], 0, 4),
-        month: valueToSlice(lesson['end'], 5, 7),
-        day: valueToSlice(lesson['end'], 8, 10),
-        hour: valueToSlice(lesson['end'], 11, 13),
-        minute: valueToSlice(lesson['end'], 14, 16),
-        second: valueToSlice(lesson['end'], 8, 10),
-        isDate: false
-      });
-      //event.endDate.convertToZone(jsical.Timezone.localTimezone);
-      event.location = /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1];
-      //event
-      //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
-      comp.addSubcomponent(vevent);
+export const toJSON = (content) => {
+  fs.writeFile("../build/out.json", content, (err) => {
+    if(err) {
+      return console.log(err);
     }
-    fs.writeFile("../build/out.ics", comp.toString(), function(err) {
-        if(err) {
-            return console.log(err);
-        }
-      console.log(".ics file is saved at 'build/out.ics', you can import you lessons into many other calendar app now!");
-    });
-  }
+    console.log("json saved.");
+  });
+};
+export const toICAL = (content) => {
+  const lessons = JSON.parse(content);
+  //let comp = new ICAL.
+
+  let comp = new jsical.Component(['vcalendar', [], []]);
+  comp.updatePropertyWithValue('prodid', '-//gayhub/MartinNey');
+  console.log(`${lessons.length} lessons.`);
+  const timeSlice = (raw) => {
+    const slice2num = (str, beg, end) => Number(String(str).slice(beg, end));
+    return {
+      year: slice2num(raw, 0, 4),
+      month: slice2num(raw, 5, 7),
+      day: slice2num(raw, 8, 10),
+      hour: slice2num(raw, 11, 13),
+      minute: slice2num(raw, 14, 16),
+      second: slice2num(raw, 8, 10),
+      isDate: false
+    }
+  };
+  lessons.forEach((lesson) => {
+    const vevent = new jsical.Component('vevent'),
+
+    event = new jsical.Event(vevent);
+
+    event.summary = lesson['title'];
+
+    event.uid = uuid.v1() + '@smaroad.com';
+
+    event.description = [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | ')
+
+    //TODO:convert timezone
+    event.startDate = new jsical.Time(timeSlice(lesson['start']));
+    event.endDate = new jsical.Time(timeSlice(lesson['end']));
+
+    event.location = /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1];
+    //event
+    //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
+    comp.addSubcomponent(vevent);
+  });
+  fs.writeFile("../build/out.ics", comp.toString(), (err) => {
+    if(err) {
+      return console.log(err);
+    }
+    console.log("lessons are saved as iCal file at 'build/out.ics', it can imported to multi calendar apps.");
+  });
 };

@@ -1,19 +1,21 @@
-var fs = require("fs");
+import fs from 'fs';
 
-function read(f) {
+const read = (f) => {
   return fs.readFileSync(f).toString();
-}
-function include(f) {
+};
+const include = (f) =>  {
   eval.apply(global, [read(f)]);
-}
+};
 
 include('../lib/BigInt.js');
 include('../lib/Barrett.js');
 include('../lib/RSA.js');
-module.exports = {
+
+const RSA = {
   RSAKeyPair: (e, n) => {
     setMaxDigits(130);
     return new RSAKeyPair(e, '', n);
   },
   encryptedString: (key, string) => encryptedString(key, string)
 };
+export default RSA;

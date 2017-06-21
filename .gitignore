@@ -3,7 +3,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -73,7 +74,10 @@ Session.vim
 *~
 # auto-generated tag files
 tags
+# project ignore
 student-info.json
 build/out.ics
 build/out.json
 
+# WebStrom
+.idea/
