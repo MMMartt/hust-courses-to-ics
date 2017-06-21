@@ -1,6 +1,6 @@
 import fs from 'fs';
 import jsical from 'ical.js';
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 
 export const toJSON = (content) => {
   fs.writeFile("../build/out.json", content, (err) => {
@@ -36,7 +36,7 @@ export const toICAL = (content) => {
 
     event.summary = lesson['title'];
 
-    event.uid = uuid.v1() + '@smaroad.com';
+    event.uid = uuid() + '@smaroad.com';
 
     event.description = [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | ')
 
