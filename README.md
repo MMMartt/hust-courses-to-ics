@@ -2,7 +2,7 @@
 Get Courses From Hub(HUST)
 
 **Prerequisite**
-+ nodejs (need to support es6)
++ Node.js
 
 **Usage**
 ```sh
@@ -11,10 +11,10 @@ git clone https://github.com/MartinNey/hust-courses-to-ics.git
 # change dir
 cd hust-courses-to-ics
 # install packages
-npm install
+npm i
 # edit and save it as 'student-info.json'
-vi src/student-info-sample.json
-cp src/student-info-sample.json src/student-info.json
+cp configs/student-info-sample.json configs/student-info.json
+vi configs/student-info.json
 # ps: you should be using vim
 # if you are using Emacs, there is probably somthing wrong with you
 # if you are using something that is not a real code editor, that is even worse
@@ -22,5 +22,6 @@ cp src/student-info-sample.json src/student-info.json
 
 # run
 npm start
+# lessons should be saved as iCal file at 'build/out.ics'
+# it can imported to multi calendar apps.
 ```
-If there is no error, there should be an 'out.ics' at 'build/'. Check it and import it to app you like.
