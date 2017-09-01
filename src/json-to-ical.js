@@ -53,6 +53,6 @@ export const toICAL = (content) => {
     if(err) {
       return console.log(err);
     }
-    console.log("lessons are saved as iCal file at 'build/out.ics', it can imported to multi calendar apps.");
+    console.log("lessons are saved as iCal file at 'build/out.ics', it can be imported to multi calendar apps.");
   });
 };
