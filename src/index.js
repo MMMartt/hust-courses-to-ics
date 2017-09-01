@@ -70,4 +70,5 @@ request({
   toICAL(res.body);
 }).catch((err) => {
   Log.error(err);
+  console.log('emmm, 出了问题多半是密码错了, 如果不是, 请发 issue')
 });
