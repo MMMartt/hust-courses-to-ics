@@ -23,5 +23,5 @@ vi configs/student-info.json
 # run
 npm start
 # lessons should be saved as iCal file at 'build/out.ics'
-# it can imported to multi calendar apps.
+# it can be imported to multi calendar apps.
 ```
