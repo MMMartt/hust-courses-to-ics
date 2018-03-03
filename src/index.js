@@ -5,8 +5,8 @@ import RSA from './rsa-loader'
 import Log from './simple-log'
 
 const regexs = {
-  pubkey: /RSAKeyPair\(\"([0-9]*?)\",\"\",\"([0-9a-fA-F]*?)\"\);/g,
-  formInputs: /name=\"execution\" value=\"([es1-4]*?)\"/,
+  pubkey: /RSAKeyPair\("([0-9]*?)","","([0-9a-fA-F]*?)"\);/g,
+  formInputs: /name="execution" value="([es1-4]*?)"/,
 }
 
 const defaultOption = {
