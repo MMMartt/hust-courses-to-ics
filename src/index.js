@@ -5,8 +5,8 @@ import RSA from './rsa-loader'
 import Log from './simple-log'
 
 const regexs = {
-  pubkey: /RSAKeyPair\("([0-9]*?)","","([0-9a-fA-F]*?)"\);/g,
-  formInputs: /name="execution" value="([es1-4]*?)"/,
+  pubkey: /RSAKeyPair\(\"([0-9]*?)\",\"\",\"([0-9a-fA-F]*?)\"\);/g,
+  formInputs: /name=\"execution\" value=\"([es1-4]*?)\"/,
 }
 
 const defaultOption = {
@@ -70,5 +70,5 @@ request({
   toICAL(res.body)
 }).catch((err) => {
   Log.error(err)
-  console.log('emmm, 出了问题多半是密码错了, 如果不是, 请发 issue')
+  Log.log('Emmm, 出了问题多半是密码错了, 如果不是, 请发 issue')
 })
