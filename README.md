@@ -7,7 +7,7 @@ Get Courses From Hub(HUST)
 **Usage**
 ```sh
 # clone this repo
-git clone https://github.com/MartinNey/hust-courses-to-ics.git
+git clone https://github.com/MMMartt/hust-courses-to-ics.git
 # change dir
 cd hust-courses-to-ics
 # install packages
