@@ -33,14 +33,17 @@ export const toICAL = (content) => {
   lessons.forEach((lesson) => {
     const vevent = new jsical.Component('vevent')
 
-    const event = {
-      ...(new jsical.Event(vevent)),
+    const event = new jsical.Event(vevent)
+    const props = {
       summary: lesson['title'],
       uid: uuid() + '@smaroad.com',
       description: [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | '),
       startDate: new jsical.Time(timeSlice(lesson['start'])),
       endDate: new jsical.Time(timeSlice(lesson['end'])),
       location: /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1]
+    }
+    for (const prop in props) {
+      event[prop] = props[prop]
     }
     //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
     comp.addSubcomponent(vevent)
