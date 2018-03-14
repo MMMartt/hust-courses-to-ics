@@ -1,8 +1,14 @@
 {
   "username": "U201512345",
-  "password": "123456",
+  "password": "tongyishenfenrenzhenmima",
   "period": {
-    "start": "2017-01-01",
-    "end": "2017-08-01"
+    "start": "2018-01-01",
+    "end": "2018-08-01"
+  },
+  "alarm": {
+    "alarm": false,
+    "triggerTime": 30,
+    "duration": 5,
+    "repeat": 2
   }
 }

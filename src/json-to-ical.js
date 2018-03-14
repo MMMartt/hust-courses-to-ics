@@ -1,59 +1,95 @@
+/*
+ * @todo: remove side effect
+ */
 import fs from 'fs'
-import jsical from 'ical.js'
+import jsIcal from 'ical.js'
 import uuid from 'uuid/v4'
 import Log from './simple-log'
 
-export const toJSON = (content) => {
-  fs.writeFile('../build/out.json', content, (err) => {
+const exportToFile = path => content => log => {
+  fs.writeFile(`${path}`, content, (err) => {
     if (err) {
       return Log.error(err)
     }
-    return Log.log('json saved.')
+    return Log.log(log)
   })
 }
-export const toICAL = (content) => {
-  const lessons = JSON.parse(content)
-  //let comp = new ICAL.
 
-  let comp = new jsical.Component(['vcalendar', [], []])
-  comp.updatePropertyWithValue('prodid', '-//gayhub/MartinNey')
-  Log.log(`${lessons.length} lessons.`)
-  const timeSlice = (raw) => {
-    const slice2num = (str, beg, end) => Number(String(str).slice(beg, end))
-    return {
-      year: slice2num(raw, 0, 4),
-      month: slice2num(raw, 5, 7),
-      day: slice2num(raw, 8, 10),
-      hour: slice2num(raw, 11, 13),
-      minute: slice2num(raw, 14, 16),
-      second: slice2num(raw, 8, 10),
-      isDate: false
-    }
+export const toJSON = content => exportToFile('../build/out.json')(content)('Json file saved.')
+
+const timeSlice = raw => {
+  const rawString = String(raw)
+  const slice2num = (beg, end) => Number(rawString.slice(beg, end))
+  return {
+    year: slice2num(0, 4),
+    month: slice2num(5, 7),
+    day: slice2num(8, 10),
+    hour: slice2num(11, 13),
+    minute: slice2num(14, 16),
+    second: slice2num(8, 10),
+    isDate: false
   }
-  lessons.forEach((lesson) => {
-    const vevent = new jsical.Component('vevent')
+}
 
-    const event = new jsical.Event(vevent)
-    const props = {
-      summary: lesson['title'],
-      uid: uuid() + '@smaroad.com',
-      description: [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | '),
-      startDate: new jsical.Time(timeSlice(lesson['start'])),
-      endDate: new jsical.Time(timeSlice(lesson['end'])),
-      location: /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1]
-    }
-    for (const prop in props) {
-      event[prop] = props[prop]
-    }
-    //vevent.addPropertyWithValue('x-my-custom-property', 'custom');
-    comp.addSubcomponent(vevent)
+const genProps = lesson => ({
+  summary: lesson['title'],
+  uid: uuid() + '@smaroad.com',
+  description: [/'JGXM\':\'(.*?)'/.exec(lesson['txt'])[1], /'KTMC\':\'(.*?)'/.exec(lesson['txt'])[1]].join(' | '),
+  startDate: new jsIcal.Time(timeSlice(lesson['start'])),
+  endDate: new jsIcal.Time(timeSlice(lesson['end'])),
+  location: /'JSMC\':\'(.*?)'/.exec(lesson['txt'])[1]
+})
+
+const singleLessonEvent = lesson => {
+  const vevent = new jsIcal.Component('vevent')
+  const event = new jsIcal.Event(vevent)
+  const props = genProps(lesson)
+  for (const prop in props) {
+    event[prop] = props[prop]
+  }
+
+  return vevent
+}
+const addAlarm = (vevent, triggerTime, duration, repeat) => {
+  const formatNum = num => `000${num}`.slice(-2)
+  const alarm = new jsIcal.Component(
+    /*       
+    BEGIN:VALARM
+    TRIGGER:-PT30M
+    REPEAT:2
+    DURATION:PT15M
+    ACTION:DISPLAY
+    END:VALARM
+    */
+    [
+      'valarm',
+      [
+        ['trigger', {}, 'duration', `-PT${formatNum(triggerTime)}M`],
+        ['duration', {}, 'duration', `PT${formatNum(duration)}M`],
+        ['action', {}, 'text', 'AUDIO'],
+        ['reapeat', {}, 'text', `${repeat}`],
+      ],
+      []
+    ]
+  )
+  vevent.addSubcomponent(alarm)
+  return vevent
+}
+
+export const toICAL = (content, configure) => {
+  const lessons = JSON.parse(content)
+  const { alarm = false, triggerTime = 30, duration = 5, repeat = 2 } = configure || {}
+
+  const comp = new jsIcal.Component(['vcalendar', [], []])
+
+  comp.updatePropertyWithValue('prodid', '-//github/MMMartt')
+
+  lessons.forEach((lesson) => {
+    const vevent = singleLessonEvent(lesson)
+    comp.addSubcomponent(alarm ? addAlarm(vevent, triggerTime, duration, repeat) : vevent)
   })
-  fs.writeFile('../build/out.ics', comp.toString(), (err) => {
-    if (err) {
-      return Log.error(err)
-    }
-    return Log.log(
-      'lessons are saved as iCal file at \'build/out.ics\', it can be imported to multi calendar apps.'
-    )
-  })
+
+  return exportToFile('../build/out.ics')(comp.toString())(
+    `${lessons.length} lessons are saved into iCal file at \'build/out.ics\', it can be imported to multi calendar apps.`
+  )
 }

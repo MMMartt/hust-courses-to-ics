@@ -67,7 +67,7 @@ request({
   })
 }).then((res) => {
   Log.response(res)
-  toICAL(res.body)
+  toICAL(res.body, studentInfo.alarm)
 }).catch((err) => {
   Log.error(err)
   Log.log('Emmm, 出了问题多半是密码错了, 如果不是, 请发 issue')
