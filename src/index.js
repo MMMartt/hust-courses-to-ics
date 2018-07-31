@@ -4,9 +4,9 @@ import { toICAL, toJSON } from './json-to-ical'
 import RSA from './rsa-loader'
 import Log from './simple-log'
 
-const regexs = {
-  pubkey: /RSAKeyPair\(\"([0-9]*?)\",\"\",\"([0-9a-fA-F]*?)\"\);/g,
-  formInputs: /name=\"execution\" value=\"([es1-4]*?)\"/,
+const regex = {
+  publicKey: /RSAKeyPair\("([0-9]*?)","","([0-9a-fA-F]*?)"\);/g,
+  formInputs: /name="execution" value="([es1-4]*?)"/,
 }
 
 const defaultOption = {
@@ -17,58 +17,49 @@ const defaultOption = {
 
 const request = rq.defaults(defaultOption)
 
-request({
-  url: configs.firstHeaders.url,
-  headers: configs.firstHeaders.headers,
-  method: 'GET',
-}).then((res) => {
-  Log.response(res)
-  const parseData = (data) => {
-    const pubkeyString = regexs.pubkey.exec(data)
-    if (pubkeyString === null) {
-      Log.error('no pubkey found!')
-      return null
+// pre works, get init cookie
+request(configs.preWork())
+  .then(res => {
+    Log.response(res)
+    const genForm = data => {
+      const publicKey = regex.publicKey.exec(data)
+      if (!publicKey || publicKey.length < 2) {
+        throw new Error(`No public key found in pre sites: ${configs.preWork()['url']}`)
+      }
+      const [username, password] = [studentInfo.username, studentInfo.password].map(
+        string => RSA.encryptedString(
+          RSA.RSAKeyPair(publicKey[1], publicKey[2]),
+          string
+        )
+      )
+      return {
+        username,
+        password,
+        code: 'code',
+        lt: 'LT-NeusoftAlwaysValidTicket',
+        execution: 'e1s1',
+        _eventId: 'submit',
+      }
     }
-    const pubkey = RSA.RSAKeyPair(pubkeyString[1], pubkeyString[2])
-    const encrypt = string => RSA.encryptedString(pubkey, string)
-    return {
-      username: encrypt(studentInfo.username),
-      password: encrypt(studentInfo.password),
-      code: 'code',
-      lt: 'LT-NeusoftAlwaysValidTicket',
-      execution: 'e1s1',
-      _eventId: 'submit',
-    }
-  }
-  const userInfo = parseData(res.body)
-  if (!userInfo) {
-    throw new Error('Whoops! Something\'s wrong while parsing for pubkey.')
-  }
-  return request({
-    url: configs.loginHeaders.url,
-    headers: configs.loginHeaders.headers,
-    method: 'POST',
-    form: userInfo,
+    return request(
+      configs.login(
+        genForm(res.body)
+      )
+    )
   })
-}).then((res) => {
-  Log.response(res)
-  return request({
-    url: configs.hubHeaders.url,
-    headers: configs.hubHeaders.headers,
-    method: 'GET',
+  .then(res => {
+    Log.response(res)
+    return request(configs.hub())
   })
-}).then((res) => {
-  Log.response(res)
-  return request({
-    url: configs.lessonsHeaders.url,
-    headers: configs.lessonsHeaders.headers,
-    form: studentInfo.period,
-    method: 'POST',
+  .then(res => {
+    Log.response(res)
+    return request(configs.lessons(studentInfo.period))
   })
-}).then((res) => {
-  Log.response(res)
-  toICAL(res.body, studentInfo.alarm)
-}).catch((err) => {
-  Log.error(err)
-  Log.log('Emmm, 出了问题多半是密码错了, 如果不是, 请发 issue')
-})
+  .then(res => {
+    Log.response(res)
+    toICAL(res.body, studentInfo.alarm)
+  })
+  .catch(err => {
+    Log.error(err)
+    Log.error('请多尝试几次。如果还是不行则检查密码，如确定密码无误请发送 issue。')
+  })

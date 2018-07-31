@@ -75,18 +75,14 @@ Session.vim
 # auto-generated tag files
 tags
 # project ignore
-student-info.json
+student-info.js
 build/out.ics
 build/out.json
 
 # WebStrom
 .idea/
 
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 
 # tmp
 .tmp/
