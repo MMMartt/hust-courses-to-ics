@@ -30,24 +30,30 @@ module.exports = {
     },
     method: 'GET'
   }),
-  login: genForm({
-    url: 'https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhub.hust.edu.cn%2Fhustpass.action',
-    headers: {
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-      'Content-Length': '603',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Host': 'pass.hust.edu.cn',
-      'Origin': 'https://pass.hust.edu.cn',
-      'Pragma': 'no-cache',
-      'Referer': 'https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action',
-      'Upgrade-Insecure-Requests': '1',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-    },
-    method: 'POST',
+  login: jsessionid => genForm({
+      url: "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action",
+      headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        // 'Content-Length': '603',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Host': 'pass.hust.edu.cn',
+        'Origin': 'https://pass.hust.edu.cn',
+        'Pragma': 'no-cache',
+        // 'Referer': 'https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action',
+        'Referer': `https://pass.hust.edu.cn/cas/login;jsessionid=${jsessionid}?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action`,
+        /**
+         * Referer here changes to `https://pass.hust.edu.cn/cas/login;jsessionid=${jsessionid}?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action` and jsessionid can be read from a cookieJar.
+         * However, the site won't validate referer so you can simply not to pass it 
+         */
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+      },
+      method: 'POST',
+      followRedirect: false,
   }),
   hub: genForm({
     url: 'http://hubs.hust.edu.cn/hustpass.action',
