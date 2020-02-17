@@ -6,7 +6,7 @@ import { des } from '../lib/des'
 
 const regex = {
   formInputs: /name="execution" value="([es1-4]*?)"/,
-  jsessionid: /(?<=JSESSIONID=).*?(?=;)/,
+  jSessionId: /(?<=JSESSIONID=).*?(?=;)/,
   lt:/LT-.*?-cas/
 }
 
@@ -23,7 +23,7 @@ const request = rq.defaults(defaultOption)
 request(configs.preWork())
   .then(res => {
     Log.response(res)
-    const jsessionid = jar.getCookieString("https://pass.hust.edu.cn/").match(regex.jsessionid)[0]
+    const jSessionId = jar.getCookieString("https://pass.hust.edu.cn/").match(regex.jSessionId)[0]
     const genForm = data => {
       const [username, password] = [studentInfo.username, studentInfo.password]
       const lt = data.match(regex.lt)[0]
@@ -36,11 +36,7 @@ request(configs.preWork())
         _eventId: 'submit',
       }
     }
-    return request(
-      configs.login(jsessionid)(
-        genForm(res.body)
-      )
-    )
+    return request(configs.login(genForm(res.body), jSessionId))
   })
   .then(res => {
     Log.response(res)
