@@ -36,7 +36,7 @@ const timeSlice = raw => {
     day: slice2num(8, 10),
     hour: slice2num(11, 13),
     minute: slice2num(14, 16),
-    second: slice2num(8, 10),
+    second: 0,
     isDate: false
   }
 }
