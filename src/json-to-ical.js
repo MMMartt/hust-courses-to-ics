@@ -11,9 +11,16 @@ import Log from './simple-log'
  * @param {Object[]} raw
  * @returns {Object[]}
  */
-const deduplicate = raw => (
-  [...new Set(raw.map(c => JSON.stringify(c)))].map(c => JSON.parse(c))
-)
+const deduplicate = raw => {
+  let lessions = new Map();
+  [...new Set(raw.map(c => JSON.stringify(c)))].map(c => JSON.parse(c)).forEach(c => {
+    const regax = /'JGXM':'(.*)','KTMC'/
+    const merge = (s, c) => { s['txt'] = s['txt'].replace(regax.exec(s['txt'])[1], regax.exec(s['txt'])[1] + ',' + regax.exec(c['txt'])[1]); return s }
+    let s = lessions.get(c['start'] + c['title'])
+    lessions.set(c['start'] + c['title'], s ? merge(s, c) : c)
+  })
+  return [...lessions.values()]
+}
 
 /* istanbul ignore next */
 const exportToFile = path => content => log => {
@@ -36,7 +43,7 @@ const timeSlice = raw => {
     day: slice2num(8, 10),
     hour: slice2num(11, 13),
     minute: slice2num(14, 16),
-    second: slice2num(8, 10),
+    second: 0,
     isDate: false
   }
 }
@@ -90,7 +97,7 @@ const addAlarm = (vevent, triggerTime, duration, repeat) => {
 }
 
 const parseToICal = (lessons, configure) => {
-  const {alarm = false, triggerTime = 30, duration = 5, repeat = 2} = configure || {}
+  const { alarm = false, triggerTime = 30, duration = 5, repeat = 2 } = configure || {}
 
   const comp = new jsIcal.Component(['vcalendar', [], []])
 

@@ -30,7 +30,7 @@ module.exports = {
     },
     method: 'GET'
   }),
-  login: jsessionid => genForm({
+  login: ((genConfigure) => (form, jSessionId) => genForm(genConfigure())(form))((jSessionId) => ({
       url: "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action",
       headers: {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -44,7 +44,7 @@ module.exports = {
         'Origin': 'https://pass.hust.edu.cn',
         'Pragma': 'no-cache',
         // 'Referer': 'https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action',
-        'Referer': `https://pass.hust.edu.cn/cas/login;jsessionid=${jsessionid}?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action`,
+        'Referer': `https://pass.hust.edu.cn/cas/login;jsessionid=${jSessionId}?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action`,
         /**
          * Referer here changes to `https://pass.hust.edu.cn/cas/login;jsessionid=${jsessionid}?service=http%3A%2F%2Fhubs.hust.edu.cn%2Fhustpass.action` and jsessionid can be read from a cookieJar.
          * However, the site won't validate referer so you can simply not to pass it 
@@ -54,7 +54,7 @@ module.exports = {
       },
       method: 'POST',
       followRedirect: false,
-  }),
+  })),
   hub: genForm({
     url: 'http://hubs.hust.edu.cn/hustpass.action',
     headers: {
