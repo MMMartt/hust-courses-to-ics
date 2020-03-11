@@ -1,9 +1,10 @@
 /*
  * @todo: remove side effect
  */
-import fs from 'fs'
+import { writeFile } from 'fs'
+import { normalize } from 'path'
 import jsIcal from 'ical.js'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import Log from './simple-log'
 
 /**
@@ -24,7 +25,7 @@ const deduplicate = raw => {
 
 /* istanbul ignore next */
 const exportToFile = path => content => log => {
-  fs.writeFile(`${path}`, content, (err) => {
+  writeFile(`${path}`, content, (err) => {
     if (err) {
       return Log.error(err)
     }
@@ -113,8 +114,8 @@ const parseToICal = (lessons, configure) => {
 /* istanbul ignore next */
 const toICAL = (content, configure) => {
   const lessons = deduplicate(JSON.parse(content))
-
-  return exportToFile('../build/out.ics')(parseToICal(lessons, configure))(
+  const path = __dirname +'/../build/out.ics'
+  return exportToFile(normalize(path))(parseToICal(lessons, configure))(
     `${lessons.length} lessons are saved into iCal file at \'build/out.ics\', it can be imported to multi calendar apps.`
   )
 }

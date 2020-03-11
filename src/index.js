@@ -2,7 +2,7 @@ import rq from 'request-promise-native'
 import { configs, studentInfo } from './config-loader'
 import { toICAL, toJSON } from './json-to-ical'
 import Log from './simple-log'
-import { des } from '../lib/des'
+import des from '../lib/des'
 
 const regex = {
   formInputs: /name="execution" value="([es1-4]*?)"/,
