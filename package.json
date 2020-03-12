@@ -1,6 +1,6 @@
 {
   "name": "node-hub",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Get courses from hust hub system.",
   "main": "src/index.js",
   "scripts": {
@@ -20,8 +20,7 @@
     "@babel/preset-env": "^7.8.7",
     "chalk": "^3.0.0",
     "ical.js": "^1.3.0",
-    "request": "^2.79.0",
-    "request-promise-native": "^1.0.4",
+    "node-hustpass": "^1.1.2",
     "uuid": "^7.0.2"
   },
   "devDependencies": {

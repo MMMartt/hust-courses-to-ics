@@ -1,5 +1,5 @@
 module.exports = {
-  presets: [['@babel/preset-env']],
+  presets: ['@babel/preset-env'],
   env: {
     test: {
       plugins: ['istanbul'],
@@ -7,11 +7,6 @@ module.exports = {
   },
   plugins: [
     '@babel/plugin-proposal-object-rest-spread',
-    [
-      '@babel/plugin-transform-modules-commonjs',
-      {
-        allowTopLevelThis: true,
-      },
-    ],
+    '@babel/plugin-transform-modules-commonjs',
   ],
 }

@@ -1,56 +1,32 @@
-import rq from 'request-promise-native'
+import { init } from 'node-hustpass'
 import { configs, studentInfo } from './config-loader'
 import { toICAL, toJSON } from './json-to-ical'
 import Log from './simple-log'
-import des from '../lib/des'
 
-const regex = {
-  formInputs: /name="execution" value="([es1-4]*?)"/,
-  jSessionId: /(?<=JSESSIONID=).*?(?=;)/,
-  lt:/LT-.*?-cas/
-}
+const { fetch, login } = init()
 
-const jar = rq.jar()
-const defaultOption = {
-  jar,
-  simple: false,
-  resolveWithFullResponse: true,
-}
-
-const request = rq.defaults(defaultOption)
-
-// pre works, get init cookie
-request(configs.preWork())
-  .then(res => {
-    Log.response(res)
-    const jSessionId = jar.getCookieString("https://pass.hust.edu.cn/").match(regex.jSessionId)[0]
-    const genForm = data => {
-      const [username, password] = [studentInfo.username, studentInfo.password]
-      const lt = data.match(regex.lt)[0]
-      return {
-        ul: username.length,
-        pl: password.length,
-        lt,
-        rsa: des(username+password+lt,'1','2','3'),
-        execution: 'e1s1',
-        _eventId: 'submit',
-      }
+const start = async () => {
+  try {
+    // login
+    const ticket = await login({ ...studentInfo, ...configs.login })
+    if (/ST-.*?-cas/.test(ticket)) {
+      Log.log('successfully login!', 'node-hustpass')
     }
-    return request(configs.login(genForm(res.body), jSessionId))
-  })
-  .then(res => {
-    Log.response(res)
-    return request(configs.hub())
-  })
-  .then(res => {
-    Log.response(res)
-    return request(configs.lessons(studentInfo.period))
-  })
-  .then(res => {
-    Log.response(res)
-    toICAL(res.body, studentInfo.alarm)
-  })
-  .catch(err => {
-    Log.error(err)
-    Log.error('请多尝试几次。如果还是不行则检查密码，如确定密码无误请发送 issue。')
-  })
+    // fetch lessons
+    let { url, options } = configs.lessons
+    options = options(studentInfo.period)
+    const resp = await fetch(url, options)
+    Log.log(options.headers, 'req')
+    Log.response(resp)
+    // convert to .ical
+    const body = await resp.text()
+    toICAL(body, studentInfo.alarm)
+  } catch (e) {
+    Log.error(e)
+    Log.error(
+      '请多尝试几次。如果还是不行则检查密码，如确定密码无误请发送 issue。'
+    )
+  }
+}
+
+start()

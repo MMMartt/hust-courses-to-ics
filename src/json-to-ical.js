@@ -13,19 +13,27 @@ import Log from './simple-log'
  * @returns {Object[]}
  */
 const deduplicate = raw => {
-  let lessions = new Map();
-  [...new Set(raw.map(c => JSON.stringify(c)))].map(c => JSON.parse(c)).forEach(c => {
-    const regax = /'JGXM':'(.*)','KTMC'/
-    const merge = (s, c) => { s['txt'] = s['txt'].replace(regax.exec(s['txt'])[1], regax.exec(s['txt'])[1] + ',' + regax.exec(c['txt'])[1]); return s }
-    let s = lessions.get(c['start'] + c['title'])
-    lessions.set(c['start'] + c['title'], s ? merge(s, c) : c)
-  })
+  let lessions = new Map()
+  ;[...new Set(raw.map(c => JSON.stringify(c)))]
+    .map(c => JSON.parse(c))
+    .forEach(c => {
+      const regax = /'JGXM':'(.*)','KTMC'/
+      const merge = (s, c) => {
+        s['txt'] = s['txt'].replace(
+          regax.exec(s['txt'])[1],
+          regax.exec(s['txt'])[1] + ',' + regax.exec(c['txt'])[1]
+        )
+        return s
+      }
+      let s = lessions.get(c['start'] + c['title'])
+      lessions.set(c['start'] + c['title'], s ? merge(s, c) : c)
+    })
   return [...lessions.values()]
 }
 
 /* istanbul ignore next */
 const exportToFile = path => content => log => {
-  writeFile(`${path}`, content, (err) => {
+  writeFile(`${path}`, content, err => {
     if (err) {
       return Log.error(err)
     }
@@ -33,7 +41,8 @@ const exportToFile = path => content => log => {
   })
 }
 
-const toJSON = content => exportToFile('../build/out.json')(content)('Json file saved.')
+const toJSON = content =>
+  exportToFile('../build/out.json')(content)('Json file saved.')
 
 const timeSlice = raw => {
   const rawString = String(raw)
@@ -45,19 +54,22 @@ const timeSlice = raw => {
     hour: slice2num(11, 13),
     minute: slice2num(14, 16),
     second: 0,
-    isDate: false
+    isDate: false,
   }
 }
 
 const genProps = lesson => {
-  return ({
+  return {
     summary: lesson['title'],
     uid: uuid() + '@smaroad.com',
-    description: [/'JGXM':'(.*?)'/.exec(lesson['txt'])[1], /'KTMC':'(.*?)'/.exec(lesson['txt'])[1]].join(' | '),
+    description: [
+      /'JGXM':'(.*?)'/.exec(lesson['txt'])[1],
+      /'KTMC':'(.*?)'/.exec(lesson['txt'])[1],
+    ].join(' | '),
     startDate: new jsIcal.Time(timeSlice(lesson['start'])),
     endDate: new jsIcal.Time(timeSlice(lesson['end'])),
-    location: /'JSMC':'(.*?)'/.exec(lesson['txt'])[1]
-  })
+    location: /'JSMC':'(.*?)'/.exec(lesson['txt'])[1],
+  }
 }
 
 const singleLessonEvent = lesson => {
@@ -90,7 +102,7 @@ const addAlarm = (vevent, triggerTime, duration, repeat) => {
         ['action', {}, 'text', 'AUDIO'],
         ['reapeat', {}, 'text', `${repeat}`],
       ],
-      []
+      [],
     ]
   )
   vevent.addSubcomponent(alarm)
@@ -98,15 +110,18 @@ const addAlarm = (vevent, triggerTime, duration, repeat) => {
 }
 
 const parseToICal = (lessons, configure) => {
-  const { alarm = false, triggerTime = 30, duration = 5, repeat = 2 } = configure || {}
+  const { alarm = false, triggerTime = 30, duration = 5, repeat = 2 } =
+    configure || {}
 
   const comp = new jsIcal.Component(['vcalendar', [], []])
 
   comp.updatePropertyWithValue('prodid', '-//github/MMMartt')
 
-  lessons.forEach((lesson) => {
+  lessons.forEach(lesson => {
     const vevent = singleLessonEvent(lesson)
-    comp.addSubcomponent(alarm ? addAlarm(vevent, triggerTime, duration, repeat) : vevent)
+    comp.addSubcomponent(
+      alarm ? addAlarm(vevent, triggerTime, duration, repeat) : vevent
+    )
   })
   return comp.toString()
 }
@@ -114,7 +129,7 @@ const parseToICal = (lessons, configure) => {
 /* istanbul ignore next */
 const toICAL = (content, configure) => {
   const lessons = deduplicate(JSON.parse(content))
-  const path = __dirname +'/../build/out.ics'
+  const path = __dirname + '/../build/out.ics'
   return exportToFile(normalize(path))(parseToICal(lessons, configure))(
     `${lessons.length} lessons are saved into iCal file at \'build/out.ics\', it can be imported to multi calendar apps.`
   )
