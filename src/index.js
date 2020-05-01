@@ -8,6 +8,7 @@ const { fetch, login } = init()
 const start = async () => {
   try {
     // login
+    Log.log('logging in...', 'node-hustpass')
     const ticket = await login({ ...studentInfo, ...configs.login })
     if (/ST-.*?-cas/.test(ticket)) {
       Log.log('successfully login!', 'node-hustpass')
