@@ -86,3 +86,6 @@ build/out.json
 
 # tmp
 .tmp/
+
+# tesseract.js
+*.traineddata*

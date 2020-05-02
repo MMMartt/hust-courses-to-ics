@@ -6,7 +6,6 @@ Get Courses From Hub(HUST)
 + `Node.js`
 + `npm/yarn`
 + `ImageMagick`: [offcial website](https://imagemagick.org/script/download.php)
-+ `Tesseract` training data: [mirror](https://husteducn-my.sharepoint.com/:u:/g/personal/maniacata_hust_edu_cn/ESA_PElEfW1IjfzABJJxfsABeQfEouNljGcdcJV6-z1GfQ?e=DzROSE)
 
 **Usage**
 ```sh
@@ -26,7 +25,6 @@ vi configs/student-info.js
 # :)
 
 # tesseract will automatically download its training data
-# but you are 90% expected to use a proxy
 # however, you can download it manually, then put it in ./
 
 # run, if it fails, you can check your configuration and retry it.

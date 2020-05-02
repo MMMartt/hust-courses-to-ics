@@ -2578,10 +2578,10 @@ node-fetch@^2.6.0:
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
 
-node-hustpass@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/node-hustpass/-/node-hustpass-2.0.1.tgz#67cfdde240f249deec635c3017f108b32d4bd071"
-  integrity sha512-kVgtm4Dj28a1wl2FanSmLhEMYx7n7lvsjbPRoVdC5psUCzYguIs3Jeq13ql76iwSs9Z7rZ5TgjH9+dVK2MElJQ==
+node-hustpass@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/node-hustpass/-/node-hustpass-2.1.0.tgz#388eddf19285ab593fd9124da86cffaee6fa6ffd"
+  integrity sha512-TS9tHHjX4PaRvmgEDQo3yZPluFDtAUe5O6SABaAsIdQ0zi9xA0pemhbi01BqIwggexPx68pXDwRenYkNwLWwtw==
   dependencies:
     "@types/node-fetch" "^2.5.5"
     fetch-cookie "^0.7.3"
