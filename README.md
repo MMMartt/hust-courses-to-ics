@@ -3,8 +3,9 @@
 Get Courses From Hub(HUST)
 
 **Prerequisite**
-+ Node.js
-+ Npm
++ `Node.js`
++ `npm/yarn`
++ `ImageMagick`: [offcial website](https://imagemagick.org/script/download.php)
 
 **Usage**
 ```sh
@@ -22,6 +23,9 @@ vi configs/student-info.js
 # if you are using Emacs, there is probably somthing wrong with you
 # if you are using something that is not a real code editor, that is even worse
 # :)
+
+# tesseract will automatically download its training data
+# however, you can download it manually, then put it in ./
 
 # run, if it fails, you can check your configuration and retry it.
 npm start
