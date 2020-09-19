@@ -32,6 +32,7 @@ npm start
 # lessons should be saved as iCal file at 'build/out.ics'
 # it can be imported to multi calendar apps. XD
 ```
+If this project do not meet your needs, try [HustExcelToICS](https://github.com/MMMartt/HUST-course-Excel-to-ICS).
 
 **Test**
 ```sh
